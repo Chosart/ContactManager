@@ -36,6 +36,18 @@ namespace ContactManager.Controllers
             return Ok(contact);
         }
 
+        [HttpPost]
+        public async Task<ActionResult<Contact>> PostContact(Contact contact)
+        {
+            if (contact == null)
+            {
+                return BadRequest();
+            }
 
+            _context.Contacts.Add(contact);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetContact), new { id = contact.Id }, contact);
+        }
     }
 }
