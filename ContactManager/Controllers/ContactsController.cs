@@ -49,5 +49,40 @@ namespace ContactManager.Controllers
 
             return CreatedAtAction(nameof(GetContact), new { id = contact.Id }, contact);
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutContact(int id, Contact contact)
+        {
+            if (id != contact.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(contact).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ContactExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        private bool ContactExists(int id)
+        {
+            return _context.Contacts.Any(e => e.Id == id);
+        }
+
     }
 }
