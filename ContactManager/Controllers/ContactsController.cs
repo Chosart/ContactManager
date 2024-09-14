@@ -41,7 +41,12 @@ namespace ContactManager.Controllers
         {
             if (contact == null)
             {
-                return BadRequest();
+                return BadRequest("Contact cannot be null.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
             _context.Contacts.Add(contact);

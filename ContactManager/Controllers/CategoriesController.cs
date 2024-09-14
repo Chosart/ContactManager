@@ -3,6 +3,7 @@ using ContactManager.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace ContactManager.Controllers
 {
@@ -11,10 +12,12 @@ namespace ContactManager.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ContactDbContext _context;
+        private readonly ILogger<CategoriesController> _logger;
 
-        public CategoriesController(ContactDbContext context)
+        public CategoriesController(ContactDbContext context, ILogger<CategoriesController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -37,11 +40,12 @@ namespace ContactManager.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory ([FromBody] Category category)
+        public async Task<ActionResult<Category>> PostCategory([FromBody] Category category)
         {
             if (category == null || !ModelState.IsValid)
             {
-                return BadRequest();
+                _logger.LogWarning("Invalid category data.");
+                return BadRequest(ModelState);
             }
 
             _context.Categories.Add(category);
@@ -108,6 +112,7 @@ namespace ContactManager.Controllers
             }
             catch(DbUpdateException ex)
             {
+                _logger.LogError(ex, "Error occured while deleting the category.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "An errr occured while deleting the category.");
             }
 
