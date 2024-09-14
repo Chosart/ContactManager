@@ -37,9 +37,9 @@ namespace ContactManager.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory (Category category)
+        public async Task<ActionResult<Category>> PostCategory ([FromBody] Category category)
         {
-            if (category == null)
+            if (category == null || !ModelState.IsValid)
             {
                 return BadRequest();
             }
@@ -48,6 +48,52 @@ namespace ContactManager.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetCategory), new { id = category.Id }, category);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutCategory(int id,  Category category)
+        {
+            if (id != category.Id)
+            {
+                return BadRequest("ID in URL does not match ID in the request body.");
+            }
+
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var existingCategory = await _context.Categories.FindAsync(id);
+            if (existingCategory == null)
+            {
+                return NotFound();
+            }
+
+            existingCategory.Name = category.Name;
+
+            _context.Entry(existingCategory).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateConcurrencyException)
+            {
+                if(!CategoryExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return NoContent();
+        }
+
+        private bool CategoryExists(int id)
+        {
+            return _context.Categories.Any(e => e.Id == id);
         }
     }
 }
