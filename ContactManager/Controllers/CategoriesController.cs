@@ -91,6 +91,29 @@ namespace ContactManager.Controllers
             return NoContent();
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            var category = await _context.Categories.FindAsync(id);
+            if(category == null)
+            {
+                return NotFound();
+            }
+
+            _context.Categories.Remove(category);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateException ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An errr occured while deleting the category.");
+            }
+
+            return NoContent();
+        }
+
         private bool CategoryExists(int id)
         {
             return _context.Categories.Any(e => e.Id == id);
