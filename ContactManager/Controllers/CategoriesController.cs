@@ -35,5 +35,19 @@ namespace ContactManager.Controllers
 
             return Ok(category);
         }
+
+        [HttpPost]
+        public async Task<ActionResult<Category>> PostCategory (Category category)
+        {
+            if (category == null)
+            {
+                return BadRequest();
+            }
+
+            _context.Categories.Add(category);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetCategory), new { id = category.Id }, category);
+        }
     }
 }
