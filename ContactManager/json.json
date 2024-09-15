@@ -1,13 +1,7 @@
 {
-  "id": 1,
-  "name": "Example Category",
-  "contacts": [
-    {
-      "id": 1,
-      "name": "John Doe",
-      "email": "john.doe@example.com",
-      "phone": "123-456-7890",
-      "categoryId": 1
-    }
-  ]
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "phone": "123-456-7890",
+  "categoryId": 1
+
 }

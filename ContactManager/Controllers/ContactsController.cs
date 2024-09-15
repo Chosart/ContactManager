@@ -37,7 +37,7 @@ namespace ContactManager.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Contact>> PostContact(Contact contact)
+        public async Task<ActionResult<Contact>> PostContact([FromBody] Contact contact)
         {
             if (contact == null)
             {
@@ -54,6 +54,7 @@ namespace ContactManager.Controllers
 
             return CreatedAtAction(nameof(GetContact), new { id = contact.Id }, contact);
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutContact(int id, Contact contact)

@@ -17,7 +17,7 @@ namespace ContactManager.Models
         [Phone]
         public string Phone { get; set; }
 
-        //Foreign Key
+        // Foreign Key
         public int CategoryId { get; set; }
         public Category Category { get; set; }
     }
